@@ -3,7 +3,9 @@ package bancodigital.data.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import bancodigital.core.exception.ContaInexistenteException;
 import org.junit.jupiter.api.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -37,5 +39,31 @@ class BancoTest {
     void tryToDirectAddConta(){
         assertThatThrownBy(()-> banco.getContas().add(mock(Conta.class)))
                 .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void testFindContaExistente() throws ContaInexistenteException {
+        int numeroEsperado = 7777;
+
+        ContaCorrente contaMock = mock(ContaCorrente.class);
+        when(contaMock.getNumero()).thenReturn(numeroEsperado);
+        banco.addConta(contaMock);
+
+        Conta conta = banco.findConta(numeroEsperado);
+        int numeroContaAtual = conta.getNumero();
+
+        assertThat(numeroContaAtual).isEqualTo(numeroEsperado);
+    }
+
+    @Test
+    void testFindContaInexistente() {
+        int numeroEsperado = 777;
+
+        ContaCorrente contaMock = mock(ContaCorrente.class);
+        when(contaMock.getNumero()).thenReturn(numeroEsperado);
+        banco.addConta(contaMock);
+
+        assertThatThrownBy(() -> banco.findConta(888))
+                .isInstanceOf(ContaInexistenteException.class);
     }
 }

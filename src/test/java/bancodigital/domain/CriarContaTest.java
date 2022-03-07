@@ -1,8 +1,6 @@
 package bancodigital.domain;
 
-import bancodigital.core.exception.FormatoDeValorInvalido;
-import bancodigital.core.exception.TipoDeContaInvalidoException;
-import bancodigital.core.exception.ValorNegativoException;
+import bancodigital.core.exception.*;
 import bancodigital.data.model.Banco;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -27,7 +25,15 @@ class CriarContaTest {
     }
 
     @Test
-    void testMensagemConfirmacao() throws FormatoDeValorInvalido {
+    void testQuantidadeInvalidaDeArgumentos() {
+        List<String> args = new ArrayList<>();
+        args.add("João Espekito");
+        assertThatThrownBy(() -> new CriarConta(banco, args))
+                .isInstanceOf(QuantidadeInvalidaDeArgumentosParaOperacaoException.class)
+        ;
+    }
+    @Test
+    void testMensagemConfirmacao() throws BancoDigitalException {
         List<String> args = new ArrayList<>();
         args.add("João Espekito");
         args.add("poupança");
@@ -53,7 +59,7 @@ class CriarContaTest {
     }
 
     @Test
-    void testCriacaoDeOperacaoComParametroTipoErrado() throws FormatoDeValorInvalido {
+    void testCriacaoDeOperacaoComParametroTipoErrado() throws BancoDigitalException {
         List<String> args = new ArrayList<>();
         args.add("João E$spekito");
         args.add("cultura");
@@ -64,7 +70,7 @@ class CriarContaTest {
     }
 
     @Test
-    void testCriacaoDeOperacaoComSaldoInicialNegativo() throws FormatoDeValorInvalido {
+    void testCriacaoDeOperacaoComSaldoInicialNegativo() throws BancoDigitalException {
         List<String> args = new ArrayList<>();
         args.add("João Espekito");
         args.add("poupança");

@@ -17,13 +17,13 @@ public abstract class Conta {
     @Getter
     private double saldo = 0.0;
 
-    Conta(Cliente cliente) {
+    public Conta(Cliente cliente) {
         this.agencia = Conta.AGENCIA_PADRAO;
         this.numero = Conta.SEQUENCIAL++;
         this.cliente = cliente;
     }
 
-    void saque(double valor) throws ValorNegativoException, SaldoInsuficienteException {
+    public void saque(double valor) throws ValorNegativoException, SaldoInsuficienteException {
         if (valor < 0.0) {
             throw new ValorNegativoException();
         }
@@ -33,19 +33,19 @@ public abstract class Conta {
         saldo -= valor;
     }
 
-    void deposito(double valor) throws ValorNegativoException {
+    public void deposito(double valor) throws ValorNegativoException {
         if (valor < 0.0) {
             throw new ValorNegativoException();
         }
         saldo += valor;
     }
 
-    void transferir(@NonNull Conta contaDestino, double valor) throws ValorNegativoException, SaldoInsuficienteException {
+    public void transferir(@NonNull Conta contaDestino, double valor) throws ValorNegativoException, SaldoInsuficienteException {
         saque(valor);
         contaDestino.deposito(valor);
     }
 
-    String extrato() {
+    public String extrato() {
         String extrato = "Titular: %s\n" +
                 "Agencia: %d\n" +
                 "Numero: %d\n" +

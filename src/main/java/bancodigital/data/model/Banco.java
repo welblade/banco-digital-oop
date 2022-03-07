@@ -1,5 +1,6 @@
 package bancodigital.data.model;
 
+import bancodigital.core.exception.ContaInexistenteException;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class Banco {
 
     private final List<Conta> contas = new ArrayList<>();
 
-    Banco(String nome){
+    public Banco(String nome){
         this.nome = nome;
     }
 
@@ -22,5 +23,12 @@ public class Banco {
 
     public void addConta(Conta conta) {
         this.contas.add(conta);
+    }
+
+    public Conta findConta(int numeroConta) throws ContaInexistenteException {
+        return contas.stream()
+                .filter((conta) -> conta.getNumero() == numeroConta)
+                .findFirst()
+                .orElseThrow(ContaInexistenteException::new);
     }
 }

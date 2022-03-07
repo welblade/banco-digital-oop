@@ -7,7 +7,7 @@ public class ContaCorrente extends Conta {
     }
 
     @Override
-    String extrato() {
+    public String extrato() {
         return "=== Extrato Conta Corrente ==\n" + super.extrato();
     }
 }
