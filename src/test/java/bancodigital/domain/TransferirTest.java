@@ -20,56 +20,52 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class DepositarTest {
+class TransferirTest {
     @Mock
     Banco banco;
     @Mock
-    ContaCorrente conta;
+    ContaCorrente contaOrigem;
+    @Mock
+    ContaCorrente contaDestino;
 
     @BeforeAll
     public void init() throws ContaInexistenteException {
         MockitoAnnotations.openMocks(this);
 
-        when(conta.getNumero()).thenReturn(777);
+        when(contaOrigem.getNumero()).thenReturn(777);
+        when(contaDestino.getNumero()).thenReturn(999);
 
-        when(banco.findConta(777)).thenReturn(conta);
+        when(banco.findConta(777)).thenReturn(contaOrigem);
+        when(banco.findConta(999)).thenReturn(contaDestino);
     }
 
     @Test
-    void testQuantidadeDeArgumentosErrada() {
+    void saqueQuantidadeArgumentosErrada() {
         List<String> args = new ArrayList<>();
         args.add("888");
-        assertThatThrownBy(() -> new Depositar(banco, args))
+        assertThatThrownBy(() -> new Transferir(banco, args))
                 .isInstanceOf(QuantidadeInvalidaDeArgumentosParaOperacaoException.class);
-    }
-
-    @Test
-    void testContaInvalida() {
-        List<String> args = new ArrayList<>();
-        args.add("a888");
-        args.add("70.0");
-        assertThatThrownBy(() -> new Depositar(banco, args))
-                .isInstanceOf(FormatoDeValorInvalido.class);
     }
 
     @Test
     void testValorInvalido() {
         List<String> args = new ArrayList<>();
-        args.add("888");
+        args.add("777");
+        args.add("999");
         args.add("A");
-        assertThatThrownBy(() -> new Depositar(banco, args))
+        assertThatThrownBy(() -> new Transferir(banco, args))
                 .isInstanceOf(FormatoDeValorInvalido.class);
     }
-
 
     @Test
     void getMensagemConfirmacao() throws BancoDigitalException {
         List<String> args = new ArrayList<>();
         args.add("777");
+        args.add("999");
         args.add("70.0");
-        Operacao operacao = new Depositar(banco, args);
+        Operacao operacao = new Transferir(banco, args);
 
-        String mensagemEsperada = "Confirmação de depósito de R$ 70,00 na conta número 777";
+        String mensagemEsperada = "Confirmação de tranferência de R$ 70,00 da conta 777 para a conta 999";
         String mensagemAtual = operacao.getMensagemConfirmacao();
 
         assertThat(mensagemAtual).isEqualTo(mensagemEsperada);
@@ -79,10 +75,11 @@ class DepositarTest {
     void execute() throws BancoDigitalException {
         List<String> args = new ArrayList<>();
         args.add("777");
+        args.add("999");
         args.add("70.0");
-        Operacao operacao = new Depositar(banco, args);
+        Operacao operacao = new Transferir(banco, args);
 
         operacao.execute();
-        verify(conta, times(1)).deposito(70.0);
+        verify(contaOrigem, times(1)).transferir(contaDestino, 70.0);
     }
 }

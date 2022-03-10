@@ -50,4 +50,16 @@ class ContaFactoryTest {
                 .isInstanceOf(ValorNegativoException.class)
         ;
     }
+
+    @Test
+    void testIsTipoPermitido(){
+        Boolean resposta = ContaFactory.isTipoPermitido("corrente");
+        assertThat(resposta).isTrue();
+    }
+
+    @Test
+    void testIsNotTipoPermitido(){
+        Boolean resposta = ContaFactory.isTipoPermitido("comigo");
+        assertThat(resposta).isFalse();
+    }
 }

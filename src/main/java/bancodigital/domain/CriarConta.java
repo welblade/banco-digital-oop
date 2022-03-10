@@ -1,9 +1,6 @@
 package bancodigital.domain;
 
-import bancodigital.core.exception.FormatoDeValorInvalido;
-import bancodigital.core.exception.QuantidadeInvalidaDeArgumentosParaOperacaoException;
-import bancodigital.core.exception.TipoDeContaInvalidoException;
-import bancodigital.core.exception.ValorNegativoException;
+import bancodigital.core.exception.*;
 import bancodigital.data.model.Banco;
 import bancodigital.data.model.Cliente;
 import bancodigital.data.model.Conta;
@@ -15,24 +12,24 @@ public class CriarConta extends Operacao {
     private static final int CLIENTE = 0;
     private static final int TIPO = 1;
     private static final int SALDO = 2;
-    private static final int QTD_ARGUMENTOS = 3;
+
+    protected static final int QTD_ARGUMENTOS = 3;
 
     private Cliente cliente;
     private String tipo;
     private double saldo;
 
-    public CriarConta(Banco banco, List<String> args) throws FormatoDeValorInvalido, QuantidadeInvalidaDeArgumentosParaOperacaoException {
+    public CriarConta(Banco banco, List<String> args) throws BancoDigitalException {
         super(banco, args);
-        if (args.size() == QTD_ARGUMENTOS) {
-            cliente = new Cliente(args.get(CLIENTE));
-            tipo = args.get(TIPO);
-            try {
-                saldo = Double.parseDouble(args.get(SALDO));
-            } catch (NumberFormatException exception) {
-                throw new FormatoDeValorInvalido();
-            }
-        }else {
-            throw new QuantidadeInvalidaDeArgumentosParaOperacaoException(QTD_ARGUMENTOS, args.size());
+
+        checkQtdArgumentos(args, QTD_ARGUMENTOS);
+
+        cliente = new Cliente(args.get(CLIENTE));
+        tipo = args.get(TIPO);
+        try {
+            saldo = Double.parseDouble(args.get(SALDO));
+        } catch (NumberFormatException exception) {
+            throw new FormatoDeValorInvalido();
         }
     }
 
