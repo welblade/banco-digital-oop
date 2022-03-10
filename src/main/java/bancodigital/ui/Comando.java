@@ -10,6 +10,6 @@ public abstract class Comando {
     public abstract List<String> execute(List<String> args) throws BancoDigitalException;
     public abstract String help();
     public static List<String> separaArgumentos(String arg) {
-        return Arrays.stream(arg.split("/s+")).collect(Collectors.toList());
+        return Arrays.stream(arg.split("\\s+")).collect(Collectors.toList());
     }
 }

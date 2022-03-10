@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class ContaFactory {
     public static String[] tiposPermitidos = { "poupança", "corrente" };
     public static Boolean isTipoPermitido(String tipo) {
-        return Arrays.stream(tiposPermitidos).anyMatch((t) -> t == tipo);
+        return Arrays.stream(tiposPermitidos).anyMatch((t) -> t.equals(tipo));
     }
     public Conta criar(Cliente cliente, String tipo, double saldoInicial) throws TipoDeContaInvalidoException, ValorNegativoException {
         Conta conta;
