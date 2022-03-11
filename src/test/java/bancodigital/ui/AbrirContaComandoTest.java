@@ -2,7 +2,7 @@ package bancodigital.ui;
 
 import org.junit.jupiter.api.Test;
 
-class CriaContaComandoTest {
+class AbrirContaComandoTest {
 
     @Test
     void execute() {

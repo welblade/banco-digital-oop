@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class CriaContaComando extends Comando {
-    private static int TIPO_CONTA = 2;
+public class AbrirContaComando extends Comando {
+    private static final int TIPO_CONTA = 2;
 
-    public CriaContaComando() {
+    public AbrirContaComando() {
 
     }
 
@@ -39,6 +39,6 @@ public class CriaContaComando extends Comando {
 
     @Override
     public String help() {
-        return "criar conta <tipo>";
+        return "abrir conta <tipo>\t Abre uma conta do <tipo> especificado (poupança ou corrente)";
     }
 }

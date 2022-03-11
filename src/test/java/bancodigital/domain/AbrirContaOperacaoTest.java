@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CriaContaOperacaoTest {
+class AbrirContaOperacaoTest {
     @Mock
     Banco banco;
 
@@ -28,20 +28,20 @@ class CriaContaOperacaoTest {
     void testQuantidadeInvalidaDeArgumentos() {
         List<String> args = new ArrayList<>();
         args.add("João Espekito");
-        assertThatThrownBy(() -> new CriaContaOperacao(banco, args))
+        assertThatThrownBy(() -> new AbrirContaOperacao(banco, args))
                 .isInstanceOf(QuantidadeInvalidaDeArgumentosParaOperacaoException.class)
         ;
     }
     @Test
     void testMensagemConfirmacao() throws BancoDigitalException {
         List<String> args = new ArrayList<>();
-        args.add("João Espekito");
         args.add("poupança");
+        args.add("João Espekito");
         args.add("0");
-        Operacao operacao = new CriaContaOperacao(banco, args);
+        Operacao operacao = new AbrirContaOperacao(banco, args);
 
         String mensagemConfirmacaoAtual = operacao.getMensagemConfirmacao();
-        String mensagemConfirmacaoEsperada = "Deseja criar uma conta poupança para o cliente João Espekito com saldo inicial de R$ 0,00?";
+        String mensagemConfirmacaoEsperada = "Deseja abrir uma conta poupança para o cliente João Espekito com saldo inicial de R$ 0,00?";
 
         assertThat(mensagemConfirmacaoAtual).isEqualTo(mensagemConfirmacaoEsperada);
     }
@@ -49,11 +49,11 @@ class CriaContaOperacaoTest {
     @Test
     void testCriacaoDeOperacaoComParametroSaldoInicialErrado() {
         List<String> args = new ArrayList<>();
-        args.add("João E$spekito");
         args.add("cultura");
+        args.add("João E$spekito");
         args.add("A");
 
-        assertThatThrownBy(() -> new CriaContaOperacao(banco, args))
+        assertThatThrownBy(() -> new AbrirContaOperacao(banco, args))
                 .isInstanceOf(FormatoDeValorInvalido.class)
         ;
     }
@@ -61,10 +61,10 @@ class CriaContaOperacaoTest {
     @Test
     void testCriacaoDeOperacaoComParametroTipoErrado() throws BancoDigitalException {
         List<String> args = new ArrayList<>();
-        args.add("João E$spekito");
         args.add("cultura");
+        args.add("João E$spekito");
         args.add("0");
-        Operacao operacao = new CriaContaOperacao(banco, args);
+        Operacao operacao = new AbrirContaOperacao(banco, args);
         assertThatThrownBy(operacao::execute)
                 .isInstanceOf(TipoDeContaInvalidoException.class);
     }
@@ -72,10 +72,10 @@ class CriaContaOperacaoTest {
     @Test
     void testCriacaoDeOperacaoComSaldoInicialNegativo() throws BancoDigitalException {
         List<String> args = new ArrayList<>();
-        args.add("João Espekito");
         args.add("poupança");
+        args.add("João Espekito");
         args.add("-1");
-        Operacao operacao = new CriaContaOperacao(banco, args);
+        Operacao operacao = new AbrirContaOperacao(banco, args);
         assertThatThrownBy(operacao::execute)
                 .isInstanceOf(ValorNegativoException.class);
     }

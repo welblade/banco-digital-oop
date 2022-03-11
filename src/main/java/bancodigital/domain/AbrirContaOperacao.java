@@ -8,9 +8,9 @@ import bancodigital.data.model.ContaFactory;
 
 import java.util.List;
 
-public class CriaContaOperacao extends Operacao {
-    private static final int CLIENTE = 0;
-    private static final int TIPO = 1;
+public class AbrirContaOperacao extends Operacao {
+    private static final int TIPO = 0;
+    private static final int CLIENTE = 1;
     private static final int SALDO = 2;
 
     protected static final int QTD_ARGUMENTOS = 3;
@@ -19,7 +19,7 @@ public class CriaContaOperacao extends Operacao {
     private String tipo;
     private double saldo;
 
-    public CriaContaOperacao(Banco banco, List<String> args) throws BancoDigitalException {
+    public AbrirContaOperacao(Banco banco, List<String> args) throws BancoDigitalException {
         super(banco, args);
 
         checkQtdArgumentos(args, QTD_ARGUMENTOS);
@@ -36,7 +36,7 @@ public class CriaContaOperacao extends Operacao {
     @Override
     public String getMensagemConfirmacao() {
         return String.format(
-                "Deseja criar uma conta %s para o cliente %s com saldo inicial de R$ %.2f?",
+                "Deseja abrir uma conta %s para o cliente %s com saldo inicial de R$ %.2f?",
                 tipo, cliente.getNome(), saldo
         );
     }

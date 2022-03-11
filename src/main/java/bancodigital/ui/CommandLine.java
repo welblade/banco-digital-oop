@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class CommandLine {
-    private static int COMANDO = 0;
+    private static final int COMANDO = 0;
 
-    private Banco banco;
-    private Map<String, ComandoOperacaoContainer> comandos = new HashMap<>();
+    private final Banco banco;
+    private final Map<String, ComandoOperacaoContainer> comandos = new HashMap<>();
 
     public CommandLine(Banco banco) {
         this.banco = banco;
@@ -25,30 +25,81 @@ public class CommandLine {
     }
 
     public void start() {
-        Scanner input = new Scanner(System.in);
-        while(true){
-            String entrada = input.nextLine();
+        Boolean isContinuar = true;
+        while(isContinuar){
+            String entrada = prompt("> ");
             List<String> args = Comando.separaArgumentos(entrada);
-            if(args.size() > 0) {
-                if(comandos.containsKey(args.get(COMANDO))){
-                    ComandoOperacaoContainer factory = comandos.get(args.get(COMANDO));
-                    try {
-                        Comando comando = (Comando) factory.comando.getDeclaredConstructor().newInstance();
-                        List<String> argsOperacao = comando.execute(args);
-                        Operacao operacao = (Operacao) factory.operacao.getDeclaredConstructor().newInstance(banco, argsOperacao);
-                        operacao.execute();
-                    } catch (NoSuchMethodException |
-                            InvocationTargetException |
-                            IllegalAccessException |
-                            InstantiationException e) {
-                        e.printStackTrace();
-                    } catch (BancoDigitalException e) {
-                        System.out.println(e.getMessage());
+            try {
+                if(args.size() > 0) {
+                    switch (args.get(COMANDO)) {
+                        case "sair":
+                            isContinuar = false;
+                            break;
+                        case "ajuda":
+                            ajuda();
+                            break;
+                        default:
+                            processarComando(args);
                     }
-                } else {
-                    break;
                 }
+            } catch (NoSuchMethodException |
+                    InvocationTargetException |
+                    IllegalAccessException |
+                    InstantiationException e) {
+                e.printStackTrace();
+            } catch (BancoDigitalException e) {
+                System.out.println(e.getMessage());
             }
         }
+    }
+
+    private void processarComando(List<String> args) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, BancoDigitalException {
+        if(comandos.containsKey(args.get(COMANDO))){
+            ComandoOperacaoContainer factory = comandos.get(args.get(COMANDO));
+            List<String> argsOperacao = executarComando(factory.comando, args);
+            Operacao operacao = novaOperacao(factory.operacao, banco, argsOperacao);
+            if(confirmarOperacao(operacao)) {
+                operacao.execute();
+            }
+        }
+    }
+
+    private List<String> executarComando(Class<?> comando, List<String> args) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, BancoDigitalException {
+        Comando classe = novoComando(comando);
+        return classe.execute(args);
+    }
+
+    private Comando novoComando(Class<?> comando) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        return (Comando) comando.getDeclaredConstructor().newInstance();
+    }
+
+    private Operacao novaOperacao(Class<?> operacao, Banco banco, List<String> args) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        return (Operacao) operacao.getDeclaredConstructor(Banco.class, List.class).newInstance(banco, args);
+    }
+
+    private boolean confirmarOperacao(Operacao operacao) {
+        String mensagem = operacao.getMensagemConfirmacao();
+        if(mensagem == null) {
+            return true;
+        }
+        System.out.println(mensagem);
+        String resposta = prompt("Digite 'sim' para confirmar a operação");
+        return resposta.equalsIgnoreCase("sim");
+    }
+
+    private String prompt(String mensagem) {
+        Scanner input = new Scanner(System.in);
+        System.out.println(mensagem);
+        System.out.print("-> ");
+        return input.nextLine();
+    }
+
+    private void ajuda() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        for (ComandoOperacaoContainer container : comandos.values()) {
+           Comando comando = novoComando(container.comando);
+           System.out.println(comando.help());
+        }
+        System.out.println("ajuda\t Exibe comandos para o programa.");
+        System.out.println("sair\t Finaliza o programa.");
     }
 }
