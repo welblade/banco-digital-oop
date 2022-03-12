@@ -1,6 +1,7 @@
 package bancodigital.ui;
 
 import bancodigital.core.exception.BancoDigitalException;
+import bancodigital.core.exception.ComandoInvalidoException;
 import bancodigital.data.model.Banco;
 import bancodigital.domain.Operacao;
 
@@ -25,9 +26,10 @@ public class CommandLine {
     }
 
     public void start() {
+        System.out.println(String.format("Bem vindo ao %s\nDigite \"ajuda\" para obter os comandos existentes.", banco.getNome()));
         Boolean isContinuar = true;
         while(isContinuar){
-            String entrada = prompt("> ");
+            String entrada = prompt("");
             List<String> args = Comando.separaArgumentos(entrada);
             try {
                 if(args.size() > 0) {
@@ -43,12 +45,17 @@ public class CommandLine {
                     }
                 }
             } catch (NoSuchMethodException |
-                    InvocationTargetException |
-                    IllegalAccessException |
                     InstantiationException e) {
                 e.printStackTrace();
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                Throwable causa = e.getCause();
+                String message = e.getMessage();
+                if (causa != null) {
+                    message = causa.getMessage();
+                }
+                System.out.println("✘ " + message);
             } catch (BancoDigitalException e) {
-                System.out.println(e.getMessage());
+                System.out.println("✘ " + e.getMessage());
             }
         }
     }
@@ -61,6 +68,8 @@ public class CommandLine {
             if(confirmarOperacao(operacao)) {
                 operacao.execute();
             }
+        } else {
+            throw new ComandoInvalidoException(args.get(COMANDO));
         }
     }
 
@@ -90,8 +99,8 @@ public class CommandLine {
     private String prompt(String mensagem) {
         Scanner input = new Scanner(System.in);
         System.out.println(mensagem);
-        System.out.print("-> ");
-        return input.nextLine();
+        System.out.print("◉ ");
+        return input.nextLine().trim();
     }
 
     private void ajuda() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
@@ -99,7 +108,7 @@ public class CommandLine {
            Comando comando = novoComando(container.comando);
            System.out.println(comando.help());
         }
-        System.out.println("ajuda\t Exibe comandos para o programa.");
-        System.out.println("sair\t Finaliza o programa.");
+        System.out.println("ajuda\t\t\t\t\t\t\t\tExibe comandos para o programa.");
+        System.out.println("sair\t\t\t\t\t\t\t\tFinaliza o programa.");
     }
 }

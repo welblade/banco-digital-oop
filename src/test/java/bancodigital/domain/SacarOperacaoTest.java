@@ -20,66 +20,68 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class TransferirTest {
+class SacarOperacaoTest {
     @Mock
     Banco banco;
     @Mock
-    ContaCorrente contaOrigem;
-    @Mock
-    ContaCorrente contaDestino;
+    ContaCorrente conta;
 
     @BeforeAll
     public void init() throws ContaInexistenteException {
         MockitoAnnotations.openMocks(this);
 
-        when(contaOrigem.getNumero()).thenReturn(777);
-        when(contaDestino.getNumero()).thenReturn(999);
+        when(conta.getNumero()).thenReturn(777);
 
-        when(banco.findConta(777)).thenReturn(contaOrigem);
-        when(banco.findConta(999)).thenReturn(contaDestino);
+        when(banco.findConta(777)).thenReturn(conta);
     }
 
     @Test
     void saqueQuantidadeArgumentosErrada() {
         List<String> args = new ArrayList<>();
         args.add("888");
-        assertThatThrownBy(() -> new Transferir(banco, args))
+        assertThatThrownBy(() -> new SacarOperacao(banco, args))
                 .isInstanceOf(QuantidadeInvalidaDeArgumentosParaOperacaoException.class);
-    }
-
-    @Test
-    void testValorInvalido() {
-        List<String> args = new ArrayList<>();
-        args.add("777");
-        args.add("999");
-        args.add("A");
-        assertThatThrownBy(() -> new Transferir(banco, args))
-                .isInstanceOf(FormatoDeValorInvalido.class);
     }
 
     @Test
     void getMensagemConfirmacao() throws BancoDigitalException {
         List<String> args = new ArrayList<>();
         args.add("777");
-        args.add("999");
         args.add("70.0");
-        Operacao operacao = new Transferir(banco, args);
+        Operacao operacao = new SacarOperacao(banco, args);
 
-        String mensagemEsperada = "Confirmação de tranferência de R$ 70,00 da conta 777 para a conta 999";
+        String mensagemEsperada = "Confirmação de saque de R$ 70,00 na conta número 777";
         String mensagemAtual = operacao.getMensagemConfirmacao();
 
         assertThat(mensagemAtual).isEqualTo(mensagemEsperada);
     }
 
     @Test
+    void testValorInvalido() {
+        List<String> args = new ArrayList<>();
+        args.add("777");
+        args.add("A");
+        assertThatThrownBy(() -> new SacarOperacao(banco, args))
+                .isInstanceOf(FormatoDeValorInvalido.class);
+    }
+
+    @Test
+    void testContaInvalida() {
+        List<String> args = new ArrayList<>();
+        args.add("a888");
+        args.add("70.0");
+        assertThatThrownBy(() -> new SacarOperacao(banco, args))
+                .isInstanceOf(FormatoDeValorInvalido.class);
+    }
+
+    @Test
     void execute() throws BancoDigitalException {
         List<String> args = new ArrayList<>();
         args.add("777");
-        args.add("999");
         args.add("70.0");
-        Operacao operacao = new Transferir(banco, args);
+        Operacao operacao = new SacarOperacao(banco, args);
 
         operacao.execute();
-        verify(contaOrigem, times(1)).transferir(contaDestino, 70.0);
+        verify(conta, times(1)).saque(70.0);
     }
 }

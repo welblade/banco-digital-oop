@@ -8,7 +8,7 @@ import bancodigital.data.model.Conta;
 
 import java.util.List;
 
-public class Transferir extends Operacao {
+public class TransferirOperacao extends Operacao {
     protected static final int QTD_ARGUMENTOS = 3;
     private static final int NUMERO_CONTA_ORIGEM = 0;
     private static final int NUMERO_CONTA_DESTINO = 1;
@@ -18,7 +18,7 @@ public class Transferir extends Operacao {
     private final Conta contaDestino;
     private final double valor;
 
-    Transferir(Banco banco, List<String> args) throws BancoDigitalException {
+    public TransferirOperacao(Banco banco, List<String> args) throws BancoDigitalException {
         super(banco, args);
         checkQtdArgumentos(args, QTD_ARGUMENTOS);
         try {

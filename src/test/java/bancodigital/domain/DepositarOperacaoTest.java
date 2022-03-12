@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class DepositarTest {
+class DepositarOperacaoTest {
     @Mock
     Banco banco;
     @Mock
@@ -39,7 +39,7 @@ class DepositarTest {
     void testQuantidadeDeArgumentosErrada() {
         List<String> args = new ArrayList<>();
         args.add("888");
-        assertThatThrownBy(() -> new Depositar(banco, args))
+        assertThatThrownBy(() -> new DepositarOperacao(banco, args))
                 .isInstanceOf(QuantidadeInvalidaDeArgumentosParaOperacaoException.class);
     }
 
@@ -48,7 +48,7 @@ class DepositarTest {
         List<String> args = new ArrayList<>();
         args.add("a888");
         args.add("70.0");
-        assertThatThrownBy(() -> new Depositar(banco, args))
+        assertThatThrownBy(() -> new DepositarOperacao(banco, args))
                 .isInstanceOf(FormatoDeValorInvalido.class);
     }
 
@@ -57,7 +57,7 @@ class DepositarTest {
         List<String> args = new ArrayList<>();
         args.add("888");
         args.add("A");
-        assertThatThrownBy(() -> new Depositar(banco, args))
+        assertThatThrownBy(() -> new DepositarOperacao(banco, args))
                 .isInstanceOf(FormatoDeValorInvalido.class);
     }
 
@@ -67,7 +67,7 @@ class DepositarTest {
         List<String> args = new ArrayList<>();
         args.add("777");
         args.add("70.0");
-        Operacao operacao = new Depositar(banco, args);
+        Operacao operacao = new DepositarOperacao(banco, args);
 
         String mensagemEsperada = "Confirmação de depósito de R$ 70,00 na conta número 777";
         String mensagemAtual = operacao.getMensagemConfirmacao();
@@ -80,7 +80,7 @@ class DepositarTest {
         List<String> args = new ArrayList<>();
         args.add("777");
         args.add("70.0");
-        Operacao operacao = new Depositar(banco, args);
+        Operacao operacao = new DepositarOperacao(banco, args);
 
         operacao.execute();
         verify(conta, times(1)).deposito(70.0);

@@ -8,15 +8,15 @@ import bancodigital.data.model.Conta;
 
 import java.util.List;
 
-public class Sacar extends Operacao {
-    protected static final int QTD_ARGUMENTOS = 2;
+public class DepositarOperacao extends Operacao {
     private static final int NUMERO_CONTA = 0;
     private static final int VALOR = 1;
+    private static final int QTD_ARGUMENTOS = 2;
 
     private final Conta conta;
     private final double valor;
 
-    Sacar(Banco banco, List<String> args) throws BancoDigitalException {
+    public DepositarOperacao(Banco banco, List<String> args) throws BancoDigitalException {
         super(banco, args);
 
         checkQtdArgumentos(args, QTD_ARGUMENTOS);
@@ -34,11 +34,11 @@ public class Sacar extends Operacao {
 
     @Override
     public String getMensagemConfirmacao() {
-        return String.format("Confirmação de saque de R$ %.2f na conta número %d", valor, conta.getNumero());
+        return String.format("Confirmação de depósito de R$ %.2f na conta número %d", valor, conta.getNumero());
     }
 
     @Override
     public void execute() throws BancoDigitalException {
-        conta.saque(valor);
+        conta.deposito(valor);
     }
 }
