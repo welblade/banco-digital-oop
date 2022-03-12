@@ -23,6 +23,6 @@ public class DepositarComando extends Comando {
 
     @Override
     public String help() {
-        return "depositar <numero conta> <valor>\tDeposita na conta <numero conta> o valor <valor>(formato decimal 0.0) especificado.";
+        return "depositar <numero conta> <valor>\n\tDeposita na conta <numero conta> o valor <valor>(formato decimal 0.0) especificado.";
     }
 }

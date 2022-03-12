@@ -19,6 +19,6 @@ public class ExtratoComando extends Comando {
 
     @Override
     public String help() {
-        return "extrato <conta numero>\t\t\t\tExibe o extrato da conta <conta numero>.";
+        return "extrato <conta numero>\n\tExibe o extrato da conta <conta numero>.";
     }
 }

@@ -24,6 +24,6 @@ public class SacarComando extends Comando {
 
     @Override
     public String help() {
-        return "sacar <numero conta> <valor>\t\tSaca da conta <numero conta> o valor <valor>(formato decimal 0.0) especificado.";
+        return "sacar <numero conta> <valor>\n\tSaca da conta <numero conta> o valor <valor>(formato decimal 0.0) especificado.";
     }
 }

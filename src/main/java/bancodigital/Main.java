@@ -1,10 +1,7 @@
 package bancodigital;
 
 import bancodigital.data.model.Banco;
-import bancodigital.domain.AbrirContaOperacao;
-import bancodigital.domain.DepositarOperacao;
-import bancodigital.domain.ExtratoOperacao;
-import bancodigital.domain.SacarOperacao;
+import bancodigital.domain.*;
 import bancodigital.ui.*;
 
 public class Main {
@@ -15,6 +12,7 @@ public class Main {
         cmd.addComando("depositar", DepositarComando.class, DepositarOperacao.class);
         cmd.addComando("extrato", ExtratoComando.class, ExtratoOperacao.class);
         cmd.addComando("sacar", SacarComando.class, SacarOperacao.class);
+        cmd.addComando("transferir", TransferirComando.class, TransferirOperacao.class);
         cmd.start();
     }
 }

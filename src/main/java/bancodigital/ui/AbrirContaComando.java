@@ -39,6 +39,6 @@ public class AbrirContaComando extends Comando {
 
     @Override
     public String help() {
-        return "abrir conta <tipo>\t\t\t\t\tAbre uma conta do <tipo> especificado (poupança ou corrente)";
+        return "abrir conta <tipo>\n\tAbre uma conta do <tipo> especificado (poupança ou corrente).";
     }
 }

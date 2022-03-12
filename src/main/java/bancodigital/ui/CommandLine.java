@@ -106,9 +106,9 @@ public class CommandLine {
     private void ajuda() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         for (ComandoOperacaoContainer container : comandos.values()) {
            Comando comando = novoComando(container.comando);
-           System.out.println(comando.help());
+           System.out.println("◌ " + comando.help());
         }
-        System.out.println("ajuda\t\t\t\t\t\t\t\tExibe comandos para o programa.");
-        System.out.println("sair\t\t\t\t\t\t\t\tFinaliza o programa.");
+        System.out.println("◌ ajuda\n\tExibe comandos para o programa.");
+        System.out.println("◌ sair\n\tFinaliza o programa.");
     }
 }
