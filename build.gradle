@@ -32,3 +32,16 @@ mainClassName = 'com.github.welblade.bancodigital.Main'
 test {
     useJUnitPlatform()
 }
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': sourceSets.main.runtimeClasspath,
+                'Main-Class': 'com.github.welblade.bancodigital.Main'
+        )
+    }
+}
+
+run {
+    standardInput = System.in
+}
